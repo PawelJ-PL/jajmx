@@ -19,7 +19,7 @@ import javax.management.openmbean.{ CompositeData, CompositeDataSupport }
 //import org.json4s._
 
 
-trait RichAttribute {
+sealed trait RichAttribute {
   val name: String
   val desc: Option[String]
   def asString(ob: Object): String = ob match {
@@ -28,10 +28,10 @@ trait RichAttribute {
   }
 }
 
-trait RichArrayAttribute extends RichAttribute {
+sealed trait RichArrayAttribute extends RichAttribute {
 }
 
-trait RichNumberAttribute extends RichAttribute {
+sealed trait RichNumberAttribute extends RichAttribute {
   def asDouble(ob: Object): Double = ob match { // TODO BAD
     case e: java.lang.Byte => e.toDouble
     case e: java.lang.Short => e.toDouble
@@ -68,7 +68,7 @@ trait RichNumberAttribute extends RichAttribute {
 
 }
 
-case class RichCompositeDataAttribute(name: String, desc: Option[String] = None) extends RichAttribute {
+final case class RichCompositeDataAttribute(name: String, desc: Option[String] = None) extends RichAttribute {
   override def asString(ob: Object): String = {
     val cd = ob.asInstanceOf[CompositeData] // TODO BAD
     cd.toString()
@@ -89,21 +89,21 @@ case class RichCompositeDataAttribute(name: String, desc: Option[String] = None)
   }
 }
 
-case class RichStringArrayAttribute(name: String, desc: Option[String] = None) extends RichArrayAttribute {
+final case class RichStringArrayAttribute(name: String, desc: Option[String] = None) extends RichArrayAttribute {
   override def asString(ob: Object): String = { // TODO BAD
     ob.asInstanceOf[Array[String]].toList.mkString(", ")
   }
 }
 
-case class RichBooleanAttribute(name: String, desc: Option[String] = None) extends RichAttribute
+final case class RichBooleanAttribute(name: String, desc: Option[String] = None) extends RichAttribute
 
-case class RichStringAttribute(name: String, desc: Option[String] = None) extends RichAttribute
+final case class RichStringAttribute(name: String, desc: Option[String] = None) extends RichAttribute
 
-case class RichGenericAttribute(name: String, desc: Option[String] = None) extends RichAttribute
+final case class RichGenericAttribute(name: String, desc: Option[String] = None) extends RichAttribute
 
-case class RichByteAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
-case class RichShortAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
-case class RichIntAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
-case class RichLongAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
-case class RichDoubleAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
-case class RichFloatAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichByteAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichShortAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichIntAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichLongAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichDoubleAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
+final case class RichFloatAttribute(name: String, desc: Option[String] = None) extends RichNumberAttribute
